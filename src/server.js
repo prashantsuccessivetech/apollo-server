@@ -1,5 +1,6 @@
 import Express from 'express';
 import { ApolloServer } from 'apollo-server-express';
+import { createServer } from 'http';
 
 class Server {
   constructor(config) {
@@ -26,6 +27,8 @@ class Server {
       ...schema,
     });
     this.Server.applyMiddleware({ app });
+    this.httpServer = createServer(app);
+    this.Server.installSubscriptionHandlers(this.httpServer);
     this.run();
   }
 
