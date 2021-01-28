@@ -20,7 +20,7 @@ export default {
   deleteTrainee: (parent, args, context) => {
     const { id } = args;
     const deletedID = userInstance.deleteUser(id);
-    pubsub.publish(constants.subscriptions.TRAINEE_DELETED, { traineeUpdated: deletedID });
+    pubsub.publish(constants.subscriptions.TRAINEE_DELETED, { traineeDeleted: deletedID });
     return deletedID;
   }
 };
