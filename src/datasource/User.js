@@ -4,7 +4,6 @@ import configurations from '../config/configurations';
 export default class UserAPI extends RESTDataSource {
     constructor() {
       super();
-      console.log("ural")
       this.baseURL = `${configurations.serviceUrl}/api/user`;
     }
   
