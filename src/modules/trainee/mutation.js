@@ -1,26 +1,51 @@
 import userInstance from '../../service/user';
 import pubsub from '../pubsub';
-import constants from '../../lib/constant';
+import { constant } from '../../lib/constant';
 
 export default {
-  createTrainee: (parent, args, context) => {
-    const { user } = args;
-    const addedUser = userInstance.createUser(user);
-    pubsub.publish(constants.subscriptions.TRAINEE_ADDED, { traineeAdded: addedUser });
-    return addedUser;
+  createTrainee: async (parent, args, context) => {
+    try {
+      const { user: { name, email, password, role, createdBy } } = args;
+      const { dataSources: { traineeAPI } } = context;
+      const response = await traineeAPI.createTrainee({name, email, createdBy, password, role });
+      pubsub.publish(constant.subscriptions.TRAINEE_ADDED, { traineeAdded: response });
+      return response;
+    } catch(error) {
+      return {
+        message: 'Database under maintainance',
+        status: 503
+      }
+    }
   },
-  updateTrainee: (parent, args, context) => {
-    const {
-      id, role, name, email
-    } = args;
-    const updatedUser = userInstance.updateUser(id, name, email, role);
-    pubsub.publish(constants.subscriptions.TRAINEE_UPDATED, { traineeUpdated: updatedUser });
-    return updatedUser;
+
+  updateTrainee: async (parent, args, context) => {
+    try {
+      const { user } = args;
+      const { dataSources: { traineeAPI } } = context;
+      const response = await traineeAPI.updateTrainee(user);
+      pubsub.publish(constant.subscriptions.TRAINEE_UPDATED, { traineeUpdated: response });
+      return response;
+    } catch (error) {
+      return {
+        message: 'Database under maintaince',
+        status: 503
+      }
+    }
+    
   },
-  deleteTrainee: (parent, args, context) => {
-    const { id } = args;
-    const deletedID = userInstance.deleteUser(id);
-    pubsub.publish(constants.subscriptions.TRAINEE_DELETED, { traineeDeleted: deletedID });
-    return deletedID;
-  }
+
+  deleteTrainee: async (parent, args, context) => {
+    try {
+      const { id } = args;
+      const { dataSources: { traineeAPI } } = context;
+      const response = await traineeAPI.deleteTrainee(id);
+      pubsub.publish(constant.subscriptions.TRAINEE_DELETED, { traineeDeleted: response });
+      return response;
+    } catch (error) {
+      return { 
+        message: 'Database under maintaince',
+        status: 503
+      }
+    }
+  },
 };

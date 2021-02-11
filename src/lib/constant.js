@@ -1,4 +1,4 @@
-export default {
+export const constant = {
   subscriptions: {
     TRAINEE_ADDED: 'TRAINEE_ADDED',
     TRAINEE_UPDATED: 'TRAINEE_UPDATED',

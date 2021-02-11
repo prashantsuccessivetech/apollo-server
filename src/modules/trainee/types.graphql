@@ -2,8 +2,35 @@ input CreateUserInput {
     name: String!
     email: String!
     role: String!
-} 
-input LoginCredentials{
-    email: String!
     password: String!
-} 
+    createdBy: String!
+}
+
+type getAllType {
+  _id: String!
+  name: String!
+  email: String!
+  role: String!
+  originalId: String!
+  createdAt: String!
+}
+
+input UpdateUserInput {
+    originalId:ID!
+    name: String
+    email: String
+    role: String
+    password: String
+    updatedBy: String!
+}
+
+type UpdatedUser {
+    status: Int!
+    message: String!
+    data: User
+}
+
+type deletedOutput {
+    status: Int!
+    message: String!
+}

@@ -1,8 +1,17 @@
-import schema from './modules';
+import config from './config/configurations';
 import Server from './server';
-import configurations from './config/configurations';
+import Schema from './modules';
 
-const server = new Server(configurations);
-(() => {
-server.bootstrap().setupApollo(schema);
-})();
+
+const server = new Server(config);
+
+const { typeDefs, resolvers } = Schema;
+
+const initServer = async () => {
+  server.setupApollo({ resolvers, typeDefs });
+};
+
+initServer();
+
+
+export default server;

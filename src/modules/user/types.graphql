@@ -1,6 +1,25 @@
-type User{
-    id:ID!
-    name:String!
-    email:String!
+type User {
+    id: ID!
+    name: String!
+    email: String!
     role: String!
+    password: String!
+    createdBy: String!
+}
+
+input Payload {
+  email: String!
+  password: String!
+}
+
+type loginOutput {
+  message: String!
+  status: Int!
+  data: String
+}
+
+type createResponse{
+  message: String!
+  status: String!
+  data: User
 }

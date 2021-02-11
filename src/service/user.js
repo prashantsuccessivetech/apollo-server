@@ -1,11 +1,13 @@
+/* eslint-disable no-console */
 class User {
   constructor() {
     this.users = new Map();
     this.id = 0;
   }
 
-  getAllUsers() {
-    return this.users.values();
+  getAll() {
+    const details = this.users.values();
+    return details;
   }
 
   createUser(user) {
@@ -14,21 +16,18 @@ class User {
     return this.users.get(this.id);
   }
 
-  updateUser(id, role, name, email) {
-    const user = this.users.get(Number(id));
-    this.users.set(Number(id), {
-      ...user, role, name, email
-    });
+  updateUser(users, id) {
+    console.log('Inside update method User');
+    const traineeId = this.users.get(Number(id));
+    this.users.set(Number(id), { ...traineeId, ...users });
     return this.users.get(Number(id));
   }
 
   deleteUser(id) {
-    this.users.delete(Number(id));
-    return id;
-  }
-
-  getUser(id) {
-    return this.users.get(Number(id));
+    const delRec = this.data.get(Number(id));
+    this.data.delete(Number(id));
+    return delRec;
   }
 }
-export default new User();
+const user = new User();
+export default user;
