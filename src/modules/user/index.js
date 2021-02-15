@@ -1,2 +1,2 @@
-export { default as Query } from './query';
-export { default as Mutation } from './mutation.js';
+export { default as getMe } from './query';
+export { default as loginMutation } from './mutation';

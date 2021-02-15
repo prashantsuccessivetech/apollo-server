@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 
 const envVars = dotenv.config().parsed;
 const configurations = {
-  port: envVars.PORT,
+  PORT: envVars.PORT,
   serviceUrl: envVars.serviceUrl
 };
 

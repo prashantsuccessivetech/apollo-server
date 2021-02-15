@@ -1,10 +1,10 @@
 import user from '../../service/user';
 
 export default {
-
-  getAllTrainees: () => user.getAllUsers(),
-  getTrainee: (parent, args) => {
-    const { id } = args;
-    return user.getUser(id);
-  }
+  // getAll: () => user.getAll(),
+  getAll: async (parent, args, context) => {
+    const { dataSources: { traineeApi } } = context;
+    const response = await traineeApi.getAll();
+    return response.data.records;
+  },
 };

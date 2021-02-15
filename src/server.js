@@ -1,48 +1,61 @@
+import { createServer } from 'http';
 import Express from 'express';
 import { ApolloServer } from 'apollo-server-express';
-import { createServer } from 'http';
-import { UserAPI } from './datasource/index';
+import { TraineeApi, UserApi} from './datasource';
 
-class Server {
+export default class Server {
   constructor(config) {
     this.config = config;
-    this.app = Express();
+    this.app = new Express();
+    this.run = this.run.bind(this);
   }
 
-  bootstrap() {
-    this.setupRouts();
-    return this;
-  }
-
-  setupRouts() {
-    const { app } = this;
-    app.get('/health-check', (req, res) => {
-      res.send('I am ok');
-    });
-    return this;
-  }
-
-  setupApollo(schema) {
-    const { app } = this;
-    this.Server = new ApolloServer({
-      ...schema,
-      dataSources: () => {
-        const userAPI = new UserAPI();
-        return { userAPI };
-      }
-    });
-    this.Server.applyMiddleware({ app });
-    this.httpServer = createServer(app);
-    this.Server.installSubscriptionHandlers(this.httpServer);
-    this.run();
+  get application() {
+    return this.app;
   }
 
   run() {
-    const { config: { port } } = this;
-    const { app } = this;
-    app.listen(port, () => {
-      console.log(`App is running on port ${port}`);
+    const { PORT } = this.config;
+    this.httpServer.listen(PORT, () => {
+      console.info(`server started on port ${PORT}`); // eslint-disable-line no-console
     });
+
+    return this;
+  }
+
+  async setupApollo(schema) {
+    const { app } = this;
+
+    // this.server = new ApolloServer({
+    //   ...schema,
+    //   context: ({ req }) => ({
+    //     request: req,
+    //     token: req.headers.authorization || '',
+    //   }),
+    //   onHealthCheck: () => new Promise((resolve) => {
+    //     resolve('I am OK');
+    //   }),
+    // });
+    this.server = new ApolloServer({
+      ...schema,
+      dataSources: () => ({
+          userAPI : new UserApi(),
+          traineeAPI: new TraineeApi(),
+      }),
+      context: ({ req }) => {
+        if (req) {
+          return { token: req.headers.authorization };
+        }
+        return {};
+      },
+      onHealthCheck: () => new Promise((resolve) => {
+        resolve('I am OK');
+      }),
+    });
+
+    this.server.applyMiddleware({ app });
+    this.httpServer = createServer(app);
+    this.server.installSubscriptionHandlers(this.httpServer);
+    this.run();
   }
 }
-export default Server;
